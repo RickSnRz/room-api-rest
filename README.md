@@ -180,9 +180,3 @@ El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla c
 
 ## Licencia
  Este proyecto está licenciado bajo la **MIT License** - consulta el archivo [LICENSE](LICENSE) para más detalles.
-
-## Copyright
-
-Copyright (c) [2024] [Rick Kevin Saman Ramirez]. Todos los derechos reservados.
-
-Este proyecto está protegido por derechos de autor y no puede ser utilizado, copiado o distribuido sin el permiso expreso del titular de los derechos de autor.
