@@ -22,7 +22,7 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 - **Postman** para pruebas
 - **Git** para control de versiones
 
-## Prerrequisitos
+## Pre requisitos
 
 Asegúrate de tener instalados:
 
