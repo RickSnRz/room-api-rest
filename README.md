@@ -179,7 +179,7 @@ El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla c
   - **Contacto:** rickx213@gmail.com
 
 ## Licencia
- Este proyecto está licenciado bajo la MIT License.
+ Este proyecto está licenciado bajo la **MIT License** - consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Copyright
 
