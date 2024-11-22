@@ -46,7 +46,7 @@ AWS_SECRET_KEY=tu-secret-key
    git clone https://github.com/tuusuario/sistema-alquiler-habitaciones.git
    ```
    
-2. onfigura el archivo `.env` en el directorio raíz:
+2. Configura el archivo `.env` en el directorio raíz:
    
     ```env
     BUCKET_NAME=nombre-del-bucket
