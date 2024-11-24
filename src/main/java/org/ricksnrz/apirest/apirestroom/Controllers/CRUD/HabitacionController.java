@@ -2,8 +2,8 @@ package org.ricksnrz.apirest.apirestroom.Controllers.CRUD;
 
 
 import org.ricksnrz.apirest.apirestroom.Entities.Habitacion;
-import org.ricksnrz.apirest.apirestroom.Repositories.HabitacionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ricksnrz.apirest.apirestroom.Services.CRUD.HabitacionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,37 +12,46 @@ import java.util.List;
 @RequestMapping("/api/habitaciones")
 public class HabitacionController {
 
-    @Autowired
-    private HabitacionRepository habitacionRepository;
+    private final HabitacionService habitacionService;
+
+    public HabitacionController(HabitacionService habitacionService) {
+        this.habitacionService = habitacionService;
+    }
 
     @GetMapping
-    public List<Habitacion> listarHabitaciones(){
-        return habitacionRepository.findAll();
+    public List<Habitacion> obtenerTodas() {
+        return habitacionService.obtenerTodas();
     }
+
     @GetMapping("/{id}")
-    public Habitacion obtenerHabitacion(@PathVariable Long id){
-        return habitacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Habitacion no encontrada con el id: " + id));
+    public ResponseEntity<Habitacion> obtenerPorId(@PathVariable Long id) {
+        return habitacionService.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
     @PostMapping
-    public Habitacion agregarHabitacion(@RequestBody Habitacion habitacion){
-        return habitacionRepository.save(habitacion);
+    public Habitacion crear(@RequestBody Habitacion habitacion) {
+        return habitacionService.guardar(habitacion);
     }
+
     @PutMapping("/{id}")
-    public Habitacion actualizarHabitacion(@PathVariable Long id, @RequestBody Habitacion habitacion) {
-        Habitacion existente = habitacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Habitacion no encontrada"));
-        existente.setNumero(habitacion.getNumero());
-        existente.setPiso(habitacion.getPiso());
-        existente.setPrecio(habitacion.getPrecio());
-        existente.setEstado(habitacion.getEstado());
-        return habitacionRepository.save(existente);
+    public ResponseEntity<Habitacion> actualizar(@PathVariable Long id, @RequestBody Habitacion habitacion) {
+        return habitacionService.obtenerPorId(id)
+                .map(existing -> {
+                    habitacion.setId(id); // Asegurar que se actualice la habitación correcta
+                    return ResponseEntity.ok(habitacionService.guardar(habitacion));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
+
     @DeleteMapping("/{id}")
-    public String eliminarHabitacion(@PathVariable Long id){
-        Habitacion habitacion = habitacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Habitacion no encontrada con el id: " + id));
-        habitacionRepository.delete(habitacion);
-        return "La habitacion con el id: " + id + " ha sido eliminada.";
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        try {
+            habitacionService.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

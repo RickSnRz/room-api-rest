@@ -2,8 +2,8 @@ package org.ricksnrz.apirest.apirestroom.Controllers.CRUD;
 
 
 import org.ricksnrz.apirest.apirestroom.Entities.Inquilino;
-import org.ricksnrz.apirest.apirestroom.Repositories.InquilinoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ricksnrz.apirest.apirestroom.Services.CRUD.InquilinoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,40 +12,46 @@ import java.util.List;
 @RequestMapping("/api/inquilinos")
 public class InquilinoController {
 
-    @Autowired
-    private InquilinoRepository inquilinoRepository;
+    private final InquilinoService inquilinoService;
+
+    public InquilinoController(InquilinoService inquilinoService) {
+        this.inquilinoService = inquilinoService;
+    }
 
     @GetMapping
-    public List<Inquilino> listarInquilinos(){
-        return inquilinoRepository.findAll();
+    public List<Inquilino> obtenerTodos() {
+        return inquilinoService.obtenerTodos();
     }
+
     @GetMapping("/{id}")
-    public Inquilino obtenerInquilino(@PathVariable Long id){
-        return inquilinoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inquilino no encontrado con el id: " + id));
+    public ResponseEntity<Inquilino> obtenerPorId(@PathVariable Long id) {
+        return inquilinoService.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
     @PostMapping
-    public Inquilino agregarInquilino(@RequestBody Inquilino inquilino){
-        return inquilinoRepository.save(inquilino);
+    public Inquilino crear(@RequestBody Inquilino inquilino) {
+        return inquilinoService.guardar(inquilino);
     }
 
     @PutMapping("/{id}")
-    public Inquilino actualizarInquilino(@PathVariable Long id, @RequestBody Inquilino inquilino) {
-        Inquilino existente = inquilinoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inquilino no encontrado"));
-        existente.setNombre(inquilino.getNombre());
-        existente.setApellido(inquilino.getApellido());
-        existente.setDni(inquilino.getDni());
-        existente.setTelefono(inquilino.getTelefono());
-        existente.setEmail(inquilino.getEmail());
-        return inquilinoRepository.save(existente);
+    public ResponseEntity<Inquilino> actualizar(@PathVariable Long id, @RequestBody Inquilino inquilino) {
+        return inquilinoService.obtenerPorId(id)
+                .map(existing -> {
+                    inquilino.setId(id); // Asegurar que se actualice el inquilino correcto
+                    return ResponseEntity.ok(inquilinoService.guardar(inquilino));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarInquilino(@PathVariable Long id){
-        Inquilino inquilino = inquilinoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inquilino no encontrado con el id: " + id));
-        inquilinoRepository.delete(inquilino);
-        return "El inquilino con el id: " + id + " ha sido eliminado.";
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        try {
+            inquilinoService.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
