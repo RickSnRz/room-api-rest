@@ -9,13 +9,18 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 - **Recibos de Alquiler**: Generación de recibos vinculando inquilinos y habitaciones, con datos como monto, concepto y observaciones.
 - **Subida y Descarga de Archivos PDF**: Los archivos se suben a AWS S3 con el número de DNI del inquilino como nombre.
 - **Configuración de CORS**: Soporte para solicitudes desde clientes externos como Postman y aplicaciones frontend.
+- **Seguridad con JWT (JSON Web Tokens)**:
+  - Autenticación basada en tokens.
+  - Rutas protegidas para operaciones que requieren autorización.
+  - Funciones de login y registro con generación de tokens.
 
 ## Tecnologías Utilizadas
 
 - **Java 17**
-- **Spring Boot 3.x**
+- **Spring Boot 3.x** 
   - Spring Web
   - Spring Data JPA
+  - Spring Security con JWT
 - **MySQL** como base de datos
 - **AWS S3** para almacenamiento de archivos
 - **Docker** para contenedores (opcional para la base de datos)
@@ -26,7 +31,7 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 
 Asegúrate de tener instalados:
 
-- **Java 17** o superior
+- **Java 17** o superior 
 - **Maven**
 - **Docker** (opcional, para la base de datos)
 - **Cuenta de AWS** con un bucket S3 configurado
@@ -72,56 +77,23 @@ AWS_SECRET_KEY=tu-secret-key
    ```bash
    docker-compose up -d
    ```
-## Endpoints de la API
-### Inquilinos
- - **Registrar un inquilino**
-     - **POST** `/api/inquilinos`
-     - **Body:**
+## Endpoints principales del API
+### Autenticación y Usuarios
 
-        ```JSON
-        {
-          "dni": "12345678",
-          "nombre": "Juan Pérez",
-          "telefono": "987654321"
-       }
-        ```
+| Método   | Endpoint      | Descripción     |  Autenticación     |
+|:------------|:-----------|:------------|:------------|
+| `POST`     | `/auth/register`     | Registro de un nuevo usuario     |No     |
+| `POST`   | `/auth/login`   | Autenticación y generación de un JWT Token   |No   |
+| `GET`   | `/api/all-users`   | Ver todos los usuarios registrados	   |Sí (JWT)   |
 
- - **Listar inquilinos**
-    - **GET** `/api/inquilinos`
+### Habitaciones e inquilinos
 
-### Habitaciones
- - **Registrar una habitación**
-     - **POST** `/api/habitaciones`
-     - **Body:**
-
-        ```JSON
-        {
-          "numero": 101,
-          "precio": 600,
-          "estado": "Disponible"
-       }
-        ```
-
- - **Listar habitaciones**
-    - **GET** `/api/habitaciones`
-
-### Recibos
- - **Crear un recibo**
-     - **POST** `/api/recibos`
-     - **Body:**
-
-        ```JSON
-        {
-          "inquilinoId": 1,
-          "habitacionId": 2,
-          "monto": 600,
-          "concepto": "Renta mensual",
-          "observaciones": "Pago puntual"
-       }
-        ```
-
- - **Listar recibos**
-    - **GET** `/api/recibos`
+| Método   | Endpoint      | Descripción     |  Autenticación     |
+|:------------|:-----------|:------------|:------------|
+| `GET`     | `/api/habitaciones`     | Listar todas las habitaciones     |Sí (JWT)     |
+| `POST`   | `/api/habitaciones	`   | Registrar una nueva habitación   |Sí (JWT)   |
+| `GET`   | `/api/inquilinos`   | Listar todos los inquilinos	   |Sí (JWT)   |
+| `POST`   | `/api/inquilinos`   | Registrar un nuevo inquilino	   |Sí (JWT)   |
 
 ## Subida y Descarga de Archivos
  - **Subir archivo PDF (DNI del inquilino)**
@@ -131,6 +103,56 @@ AWS_SECRET_KEY=tu-secret-key
  - **Descargar archivo PDF**
      - **GET** `/api/files/download`
      - **Params:** `dni=12345678`
+
+## Ejemplo de Peticiones en Postman
+**Subir archivo:**
+  - **Método:** `POST`
+  - **URL:** `http://localhost:8080/api/files/upload?dni=12345678`
+  - **Headers:**
+    
+     ```bash
+        Content-Type: multipart/form-data
+      ```
+
+ - **Body:**
+   - **Tipo:** `form-data`
+   - **Clave:** `file` (Archivo PDF)
+     
+**Descargar archivo:**
+  - **Método:** `GET`
+  - **URL:** `http://localhost:8080/api/files/upload?dni=12345678`
+
+## Seguridad implementada
+
+La seguridad del sistema se basa en JWT (JSON Web Tokens) para proteger los endpoints. A continuación, se describen los pasos principales para interactuar con el sistema:
+
+ 1. **Registro de usuario:**
+     - **POST** `/auth/register`
+     - **Ejemplo en Postman:**
+
+       ```JSON
+            {
+             "username": "usuario1",
+             "password": "contraseña123"
+            }
+       ```
+            
+ 2. **Login:**
+     - **POST** `/auth/login`
+     - **Respuesta exitosa:**
+       
+       ```JSON
+            {
+             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+       ```
+ 3. **Acceso a endpoints protegidos:**
+     - **Agrega el token como un header `Authorization` con el prefijo `Bearer`:**
+       
+       ```makefile
+            Authorization: Bearer <tu_token_generado>
+       ```
+       
 
 ## Ejemplo de Peticiones en Postman
 **Subir archivo:**
