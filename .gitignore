@@ -38,4 +38,5 @@ build/
 
 mysql_data/
 
-!**/src/resources/jwtKeys/
+src/main/resources/jwtKeys/
+
