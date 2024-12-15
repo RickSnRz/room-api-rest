@@ -190,7 +190,38 @@ public class CorsConfig implements WebMvcConfigurer {
 ## Base de Datos
 El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla con el archivo `docker-compose.yml`. Credenciales de conexión configuradas en `application.properties`:
 
- ```properties
+ ```plaintext
+        src/
+        ├── main/
+        │   ├── java/org/mi_proyecto/
+        │   │   ├── Configuration/
+        │   │   │   ├── JWTConfig.java
+        │   │   ├── Components/
+        │   │   │   ├── JwtUtil.java
+        │   │   ├── Controllers/
+        │   │   │   ├── AuthController.java
+        │   │   │   ├── UsuarioController.java
+        │   │   ├── Entities/
+        │   │   │   ├── Usuarios.java
+        │   │   │   ├── Habitaciones.java
+        │   │   │   ├── Inquilinos.java
+        │   │   ├── Repositories/
+        │   │   │   ├── UsuarioRepository.java
+        │   │   │   ├── HabitacionRepository.java
+        │   │   │   ├── InquilinoRepository.java
+        │   │   ├── Services/
+        │   │   │   ├── UsuarioService.java
+        │   │   │   ├── HabitacionService.java
+        │   │   │   ├── InquilinoService.java
+        ├── resources/
+        │   ├── application.properties
+ ```
+
+# Estructura del Proyecto
+
+El proyecto está organizado de la siguiente manera:
+
+```properties
         spring.datasource.url=jdbc:mysql://localhost:3306/alquiler_habitaciones
         spring.datasource.username=root
         spring.datasource.password=tu_contraseña
