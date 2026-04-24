@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
+
 public class Habitacion {
 
     @Id

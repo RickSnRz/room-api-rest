@@ -1,10 +1,11 @@
 package org.ricksnrz.apirest.apirestroom.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -23,7 +24,8 @@ public class Recibo {
     private Habitacion habitacion;
 
     @Column(name = "fecha_emision")
-    private LocalDateTime fechaEmision = LocalDateTime.now();
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaEmision;
 
     private BigDecimal monto;
     private String concepto;

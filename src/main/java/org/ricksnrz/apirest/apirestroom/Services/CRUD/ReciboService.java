@@ -1,6 +1,10 @@
 package org.ricksnrz.apirest.apirestroom.Services.CRUD;
 
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import org.ricksnrz.apirest.apirestroom.Entities.Habitacion;
 import org.ricksnrz.apirest.apirestroom.Entities.Inquilino;
 import org.ricksnrz.apirest.apirestroom.Entities.Recibo;
@@ -9,6 +13,8 @@ import org.ricksnrz.apirest.apirestroom.Repositories.InquilinoRepository;
 import org.ricksnrz.apirest.apirestroom.Repositories.ReciboRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -50,5 +56,29 @@ public class ReciboService {
 
     public List<Recibo> listarRecibos() {
         return reciboRepository.findAll();
+    }
+
+    public byte[] generarPdf(Long id) throws Exception {
+        Recibo recibo = obtenerReciboPorId(id);
+
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(baos);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        document.add(new Paragraph("RECIBO DE PAGO"));
+        document.add(new Paragraph(" "));
+
+        document.add(new Paragraph("Inquilino: " + recibo.getInquilino().getNombre() + " " + recibo.getInquilino().getApellido()));
+        document.add(new Paragraph("Habitación: " + recibo.getHabitacion().getNumero()));
+        document.add(new Paragraph("Monto: S/ " + recibo.getMonto()));
+        document.add(new Paragraph("Concepto: " + recibo.getConcepto()));
+        document.add(new Paragraph("Fecha: " + recibo.getFechaEmision().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+
+        document.close();
+
+        return baos.toByteArray();
     }
 }

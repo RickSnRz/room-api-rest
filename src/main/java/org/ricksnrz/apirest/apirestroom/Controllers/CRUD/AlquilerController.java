@@ -2,8 +2,8 @@ package org.ricksnrz.apirest.apirestroom.Controllers.CRUD;
 
 
 import org.ricksnrz.apirest.apirestroom.Entities.Alquiler;
-import org.ricksnrz.apirest.apirestroom.Entities.Habitacion;
 import org.ricksnrz.apirest.apirestroom.Services.CRUD.AlquilerService;
+import org.ricksnrz.apirest.apirestroom.Services.models.dtos.AlquileresDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +24,10 @@ public class AlquilerController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearAlquiler(@RequestBody Alquiler alquiler) {
+    public ResponseEntity<?> crearAlquiler(@RequestBody AlquileresDTO dto) {
         try {
-            Alquiler nuevoAlquiler = alquilerService.crearAlquiler(alquiler);
-            return ResponseEntity.ok(nuevoAlquiler);
+            Alquiler nuevo = alquilerService.crearAlquiler(dto);
+            return ResponseEntity.ok(nuevo);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

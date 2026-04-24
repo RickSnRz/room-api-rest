@@ -4,6 +4,7 @@ package org.ricksnrz.apirest.apirestroom.Security;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ricksnrz.apirest.apirestroom.Services.IJWTUtilityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,12 +27,15 @@ public class SecurityConfig {
     @Autowired
     private IJWTUtilityService jwtUtilityService;
 
+    @Value("${CORS_URLS}")
+    private String corsUrls;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // Orígenes permitidos
+                    config.setAllowedOrigins(List.of(corsUrls)); // Orígenes permitidos
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true); // Habilita credenciales

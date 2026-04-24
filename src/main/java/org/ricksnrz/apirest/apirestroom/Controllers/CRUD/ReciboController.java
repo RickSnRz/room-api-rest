@@ -38,4 +38,18 @@ public class ReciboController {
         List<Recibo> recibos = reciboService.listarRecibos();
         return ResponseEntity.ok(recibos);
     }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> generarPdf(@PathVariable Long id) {
+        try {
+            byte[] pdf = reciboService.generarPdf(id);
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=recibo.pdf")
+                    .body(pdf);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

@@ -34,7 +34,7 @@ public class InquilinoAWS {
     @PostMapping("/{dni}/upload")
     public ResponseEntity<String> uploadDni(@PathVariable String dni, @RequestParam("file") MultipartFile file) throws IOException {
         // Subir archivo PDF con el número de DNI como nombre
-        String fileUrl = s3Service.uploadFile(file, dni);
+        String fileUrl = s3Service.uploadDni(file, dni);
 
         // Responder con la URL del archivo subido
         return ResponseEntity.ok("Archivo subido correctamente: " + fileUrl);
@@ -49,7 +49,7 @@ public class InquilinoAWS {
     @GetMapping("/{dni}/download")
     public ResponseEntity<byte[]> downloadDni(@PathVariable String dni) {
         // Descargar archivo desde S3
-        ResponseInputStream<GetObjectResponse> file = s3Service.downloadFile(dni);
+        ResponseInputStream<GetObjectResponse> file = s3Service.downloadDni(dni);
 
         // Leer el contenido del archivo PDF
         byte[] fileBytes;

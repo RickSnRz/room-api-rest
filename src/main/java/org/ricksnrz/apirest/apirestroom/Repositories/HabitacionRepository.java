@@ -3,6 +3,10 @@ package org.ricksnrz.apirest.apirestroom.Repositories;
 import org.ricksnrz.apirest.apirestroom.Entities.Habitacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface HabitacionRepository extends JpaRepository<Habitacion, Long> {
+
+    Optional<Habitacion> findByNumero(String numero);
 
 }
