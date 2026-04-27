@@ -1,6 +1,7 @@
 package org.ricksnrz.apirest.apirestroom.Services.AWS;
 
 
+import org.ricksnrz.apirest.apirestroom.Entities.Recibo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class S3Service {
 
     private final S3Client s3Client;
+
 
     @Value("${BUCKET_NAME}")
     private String bucketName;

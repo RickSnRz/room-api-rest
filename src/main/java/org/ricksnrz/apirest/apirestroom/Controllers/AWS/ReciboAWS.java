@@ -1,6 +1,7 @@
 package org.ricksnrz.apirest.apirestroom.Controllers.AWS;
 
 import org.ricksnrz.apirest.apirestroom.Services.AWS.S3Service;
+import org.ricksnrz.apirest.apirestroom.Services.CRUD.ReciboService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,22 +16,39 @@ import java.io.IOException;
 public class ReciboAWS{
 
     private final S3Service s3Service;
+    private final ReciboService reciboService;
 
-    public ReciboAWS(S3Service s3Service) {
+    public ReciboAWS(S3Service s3Service, ReciboService reciboService) {
         this.s3Service = s3Service;
+        this.reciboService = reciboService;
     }
 
     /**
      * Subir PDF de un recibo
      */
-    @PostMapping("/{reciboId}/upload")
-    public ResponseEntity<String> uploadRecibo(
-            @PathVariable Long reciboId,
-            @RequestParam("file") MultipartFile file
-    ) throws IOException {
+    @PostMapping("/{reciboId}/generar")
+    public ResponseEntity<String> generarYSubir(@PathVariable Long reciboId) {
+        try {
 
-        String url = s3Service.uploadRecibo(file, reciboId);
-        return ResponseEntity.ok("Recibo subido correctamente: " + url);
+            // 1. Generar PDF
+            byte[] pdfBytes = reciboService.generarPdf(reciboId);
+
+            // 2. Convertir a MultipartFile (SIN DEPENDENCIAS EXTRAS)
+            MultipartFile file = new org.springframework.mock.web.MockMultipartFile(
+                    "file",
+                    "recibo-" + reciboId + ".pdf",
+                    "application/pdf",
+                    pdfBytes
+            );
+
+            // 3. Subir a AWS
+            String url = s3Service.uploadRecibo(file, reciboId);
+
+            return ResponseEntity.ok(url);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al generar y subir recibo");
+        }
     }
 
     /**
