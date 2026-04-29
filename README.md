@@ -2,17 +2,45 @@
 
 Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de habitaciones. La API permite registrar inquilinos, habitaciones, generar recibos de alquiler, y subir/descargar documentos relacionados con los inquilinos, como copias del DNI, utilizando **Amazon S3** como almacenamiento.
 
+## Tabla de contenido
+
+- [Características](#características)
+- [Arquitectura](#arquitectura)
+- [Tecnologías](#tecnologías)
+- [Requisitos](#requisitos)
+- [Configuración](#configuración)
+- [Ejecución local](#ejecución-local)
+- [Autenticación](#autenticación)
+- [API Endpoints](#api-endpoints)
+- [Flujos clave](#flujos-clave)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Autor](#autor)
+- [Licencia](#licencia)
+
 ## Características
 
-- **Gestión de Inquilinos**: Registro, edición, consulta y eliminación de inquilinos.
-- **Gestión de Habitaciones**: Manejo de habitaciones con su precio, estado y número.
-- **Recibos de Alquiler**: Generación de recibos vinculando inquilinos y habitaciones, con datos como monto, concepto y observaciones.
-- **Subida y Descarga de Archivos PDF**: Los archivos se suben a AWS S3 con el número de DNI del inquilino como nombre.
-- **Configuración de CORS**: Soporte para solicitudes desde clientes externos como Postman y aplicaciones frontend.
-- **Seguridad con JWT (JSON Web Tokens)**:
-  - Autenticación basada en tokens.
-  - Rutas protegidas para operaciones que requieren autorización.
-  - Funciones de login y registro con generación de tokens.
+- Autenticación y autorización con **JWT**.
+- Gestión CRUD de:
+    - Inquilinos
+    - Habitaciones
+    - Alquileres
+    - Recibos
+- Gestión documental con **AWS S3**:
+    - DNI de inquilinos
+    - PDF de recibos
+- Generación de recibos en PDF.
+- Envío de recibos por **WhatsApp** mediante Twilio.
+- Seguridad stateless con Spring Security.
+
+## Arquitectura
+
+API REST organizada en capas:
+
+- **Controllers**: Exposición de endpoints HTTP.
+- **Services**: Lógica de negocio.
+- **Repositories**: Persistencia con Spring Data JPA.
+- **Security**: JWT filter chain y políticas de acceso.
+- **Integraciones externas**: AWS S3 y Twilio API.
 
 ## Tecnologías Utilizadas
 
@@ -26,6 +54,7 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 - **Docker** para contenedores (opcional para la base de datos)
 - **Postman** para pruebas
 - **Git** para control de versiones
+- **Twilio** para envío de mensajes de WhatsApp
 
 ## Pre requisitos
 
@@ -35,6 +64,7 @@ Asegúrate de tener instalados:
 - **Maven**
 - **Docker** (opcional, para la base de datos)
 - **Cuenta de AWS** con un bucket S3 configurado
+- **Cuenta de Twilio** para el envío de mensajes de WhatsApp (opcional)
 - **Archivo `.env`** con las siguientes variables de entorno:
 
 ```properties
@@ -188,43 +218,31 @@ public class CorsConfig implements WebMvcConfigurer {
 ```
 
 ## Base de Datos
-El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla con el archivo `docker-compose.yml`. Credenciales de conexión configuradas en `application.properties`:
-
- ```plaintext
-        src/
-        ├── main/
-        │   ├── java/org/mi_proyecto/
-        │   │   ├── Configuration/
-        │   │   │   ├── JWTConfig.java
-        │   │   ├── Components/
-        │   │   │   ├── JwtUtil.java
-        │   │   ├── Controllers/
-        │   │   │   ├── AuthController.java
-        │   │   │   ├── UsuarioController.java
-        │   │   ├── Entities/
-        │   │   │   ├── Usuarios.java
-        │   │   │   ├── Habitaciones.java
-        │   │   │   ├── Inquilinos.java
-        │   │   ├── Repositories/
-        │   │   │   ├── UsuarioRepository.java
-        │   │   │   ├── HabitacionRepository.java
-        │   │   │   ├── InquilinoRepository.java
-        │   │   ├── Services/
-        │   │   │   ├── UsuarioService.java
-        │   │   │   ├── HabitacionService.java
-        │   │   │   ├── InquilinoService.java
-        ├── resources/
-        │   ├── application.properties
- ```
+El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla con el archivo `docker-compose.yml`. Credenciales de conexión configuradas en `application.properties`.
 
 # Estructura del Proyecto
 
 El proyecto está organizado de la siguiente manera:
 
-```properties
-        spring.datasource.url=jdbc:mysql://localhost:3306/alquiler_habitaciones
-        spring.datasource.username=root
-        spring.datasource.password=tu_contraseña
+```plaintext
+src/main/java/org/ricksnrz/apirest/apirestroom
+├── Controllers
+│   ├── AuthController.java
+│   ├── UserController.java
+│   ├── WhatsAppController.java
+│   ├── AWS
+│   │   ├── InquilinoAWS.java
+│   │   └── ReciboAWS.java
+│   └── CRUD
+│       ├── InquilinoController.java
+│       ├── HabitacionController.java
+│       ├── AlquilerController.java
+│       └── ReciboController.java
+├── Services
+├── Repositories
+├── Entities
+└── Security
+
  ```
 
 ## Autor

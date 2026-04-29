@@ -33,6 +33,5 @@ public class WhatsAppService {
                 )
                 .setMediaUrl(Arrays.asList(URI.create(urlPdf))) // 🔥 AQUÍ VA EL PDF
                 .create();
-
     }
 }
