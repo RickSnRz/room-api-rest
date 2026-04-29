@@ -17,7 +17,7 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 - [Autor](#autor)
 - [Licencia](#licencia)
 
-## Características
+## ✨ Características
 
 - Autenticación y autorización con **JWT**.
 - Gestión CRUD de:
@@ -32,7 +32,7 @@ Este proyecto es una **API RESTful** diseñada para gestionar el alquiler de hab
 - Envío de recibos por **WhatsApp** mediante Twilio.
 - Seguridad stateless con Spring Security.
 
-## Arquitectura
+## 🏛️ Arquitectura
 
 API REST organizada en capas:
 
@@ -42,7 +42,12 @@ API REST organizada en capas:
 - **Security**: JWT filter chain y políticas de acceso.
 - **Integraciones externas**: AWS S3 y Twilio API.
 
-## Tecnologías Utilizadas
+## 🏗️ Arquitectura de despliegue
+
+![Arquitectura de despliegue](docs/arquitectura-deploy.png)
+
+
+## 🛠️ Tecnologías Utilizadas
 
 - **Java 17**
 - **Spring Boot 3.x** 
@@ -56,7 +61,7 @@ API REST organizada en capas:
 - **Git** para control de versiones
 - **Twilio** para envío de mensajes de WhatsApp
 
-## Pre requisitos
+## ✅ Pre requisitos
 
 Asegúrate de tener instalados:
 
@@ -73,7 +78,7 @@ REGION=us-east-1
 AWS_KEY_ID=tu-access-key
 AWS_SECRET_KEY=tu-secret-key
 ```
-## Instalación
+## ⚙️ Instalación
 
 1. Clona el repositorio:
    
@@ -107,7 +112,7 @@ AWS_SECRET_KEY=tu-secret-key
    ```bash
    docker-compose up -d
    ```
-## Endpoints principales del API
+## 🔌 Endpoints principales del API
 ### Autenticación y Usuarios
 
 | Método   | Endpoint      | Descripción     |  Autenticación     |
@@ -152,7 +157,7 @@ AWS_SECRET_KEY=tu-secret-key
   - **Método:** `GET`
   - **URL:** `http://localhost:8080/api/files/upload?dni=12345678`
 
-## Seguridad implementada
+## 🔐 Seguridad implementada
 
 La seguridad del sistema se basa en JWT (JSON Web Tokens) para proteger los endpoints. A continuación, se describen los pasos principales para interactuar con el sistema:
 
@@ -202,7 +207,7 @@ La seguridad del sistema se basa en JWT (JSON Web Tokens) para proteger los endp
   - **Método:** `GET`
   - **URL:** `http://localhost:8080/api/files/upload?dni=12345678`
 
-## Configuración de CORS
+## 🌐 Configuración de CORS
 El sistema permite conexiones desde cualquier origen para desarrollo. La configuración se encuentra en `CorsConfig.java`:
 
 ```java
@@ -217,10 +222,10 @@ public class CorsConfig implements WebMvcConfigurer {
 }
 ```
 
-## Base de Datos
+## 🗄️ Base de Datos
 El proyecto usa MySQL como base de datos. Si usas Docker, puedes inicializarla con el archivo `docker-compose.yml`. Credenciales de conexión configuradas en `application.properties`.
 
-# Estructura del Proyecto
+# 🧩 Estructura del Proyecto
 
 El proyecto está organizado de la siguiente manera:
 
@@ -245,9 +250,9 @@ src/main/java/org/ricksnrz/apirest/apirestroom
 
  ```
 
-## Autor
+## 👨‍💻 Autor
   - **Rick Kevin Saman Ramirez**
   - **Contacto:** rickx213@gmail.com
 
-## Licencia
+## 📄 Licencia
  Este proyecto está licenciado bajo la **MIT License** - consulta el archivo [LICENSE](LICENSE) para más detalles.
